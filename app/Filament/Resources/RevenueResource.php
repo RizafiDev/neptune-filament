@@ -6,9 +6,11 @@ use App\Filament\Resources\RevenueResource\Pages;
 use App\Models\Revenue;
 use Filament\Forms;
 use Filament\Forms\Form;
+use App\Models\User;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -30,12 +32,10 @@ class RevenueResource extends Resource
                 TextInput::make('revenue_amount')
                     ->label('Amount ($)')
                     ->numeric()
-                    ->mask(
-                        money: true,  // Gunakan opsi money mask bawaan
-                        decimalPlaces: 2,
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                    )
+                    ->required(),
+                TextInput::make('revenue_month')
+                    ->label('Revenue Month')
+                    ->type('month') // Set type to 'month'
                     ->required(),
             ]);
     }
@@ -50,6 +50,9 @@ class RevenueResource extends Resource
                 Tables\Columns\TextColumn::make('revenue_amount')
                     ->label('Amount ($)')
                     ->money('USD', true) // Format mata uang USD
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('revenue_month')
+                    ->label('Month')
                     ->sortable(),
             ])
             ->filters([
@@ -80,4 +83,11 @@ class RevenueResource extends Resource
             'edit' => Pages\EditRevenue::route('/{record}/edit'),
         ];
     }
+
+    public static function canCreate(): bool
+    {
+        return in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR]);
+
+    }
+
 }

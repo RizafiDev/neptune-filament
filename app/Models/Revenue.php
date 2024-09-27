@@ -10,9 +10,13 @@ class Revenue extends Model
     use HasFactory;
 
 
-    
+    protected $table = 'revenues'; 
 
-    protected $fillable = ['revenue_amount'];
+    protected $fillable = [
+        'artist_name',
+        'revenue_amount',
+        'revenue_month',
+    ];
 
     public function getAmountAttribute($value)
     {
