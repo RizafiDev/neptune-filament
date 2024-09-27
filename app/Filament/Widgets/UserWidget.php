@@ -19,12 +19,13 @@ class UserWidget extends BaseWidget
             ->chart([1, 2, 6, 3, 11, 4, 20])
             ->color('info'),
 
-            Stat::make('Released', Release::count() )
+            Stat::make('Released', Release::where('status', 'approved')->count() )
             ->description('Success Music Release' )
             ->descriptionIcon('heroicon-m-musical-note', IconPosition::Before)
             ->chart([7, 2, 10, 3, 15, 4, 17])
             ->color('success'),
-            Stat::make('Pending Release', Release::count() )
+
+            Stat::make('Pending Release', Release::whereIn('status', ['review','rejected' ])->count())
             ->description('Need your action' )
             ->descriptionIcon('heroicon-m-shield-exclamation', IconPosition::Before)
             ->chart([1, 2, 5, 3, 20, 4, 1])
