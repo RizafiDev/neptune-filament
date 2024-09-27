@@ -9,8 +9,6 @@ class Release extends Model
 {
     use HasFactory;
 
-
-
     const EXPLICIT_YES = 'YES';
     const EXPLICIT_NO = 'NO';
 
@@ -27,6 +25,7 @@ class Release extends Model
         self::TYPE_VOCAL => 'Vocal',
         self::TYPE_INS => 'Instrumental',
     ];
+
 
     protected $table = 'releases'; 
     protected $fillable = [

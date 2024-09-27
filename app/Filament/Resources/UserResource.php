@@ -61,16 +61,13 @@ class UserResource extends Resource
                     ->color(fn (string $state): string => match ($state) {
                         'ADMIN' => 'danger',
                         'EDITOR' => 'info',
-                        'ARTIST' => 'success',})
-                    ,
+                        'ARTIST' => 'success',}),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -104,32 +101,15 @@ class UserResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return in_array(auth()->user()->role, [User::ROLE_ARTIST, User::ROLE_ADMIN, User::ROLE_EDITOR]);
+        return in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR]);
 
     }
 
     public static function canView($record): bool
     {
-        return in_array(auth()->user()->role, [User::ROLE_ARTIST, User::ROLE_ADMIN, User::ROLE_EDITOR]);
+        return in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR]);
 
     }
 
-    public static function canCreate(): bool
-    {
-        // Artist tidak dapat membuat data
-        return auth()->user()->role !== User::ROLE_ARTIST;
-    }
-
-    public static function canEdit($record): bool
-    {
-        // Artist tidak dapat mengedit data
-        return auth()->user()->role !== User::ROLE_ARTIST;
-    }
-
-    public static function canDelete($record): bool
-    {
-        // Artist tidak dapat menghapus data
-        return auth()->user()->role !== User::ROLE_ARTIST;
-    }
     
 }
