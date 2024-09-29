@@ -9,8 +9,7 @@ class Revenue extends Model
 {
     use HasFactory;
 
-
-    protected $table = 'revenues'; 
+    protected $table = 'revenues';
 
     protected $fillable = [
         'artist_name',
@@ -28,5 +27,3 @@ class Revenue extends Model
         $this->attributes['revenue_amount'] = round($value, 2); // Menyimpan nilai dengan 2 desimal
     }
 }
-
-

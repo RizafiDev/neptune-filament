@@ -10,69 +10,72 @@ use App\Models\User;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class RevenueResource extends Resource
 {
     protected static ?string $model = Revenue::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                TextInput::make('artist_name')
-                    ->label('Artist')
-                    ->required()
-                    ->maxLength(255),
+        return $form->schema([
+            TextInput::make('artist_name')
+                ->label('Artist')
+                ->required()
+                ->maxLength(255),
 
-                TextInput::make('revenue_amount')
-                    ->label('Amount ($)')
-                    ->numeric()
-                    ->required(),
-                TextInput::make('revenue_month')
-                    ->label('Revenue Month')
-                    ->type('month') // Set type to 'month'
-                    ->required(),
-            ]);
+            TextInput::make('revenue_amount')
+                ->label('Amount ($)')
+                ->numeric()
+                ->required(),
+
+            TextInput::make('revenue_month')
+                ->label('Revenue Month')
+                ->type('month') // Menggunakan input type month
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('artist_name')
-                    ->label('Artist Name'),
+        return $table->columns([
+            Tables\Columns\TextColumn::make('artist_name')
+                ->label('Artist Name'),
 
-                Tables\Columns\TextColumn::make('revenue_amount')
-                    ->label('Amount ($)')
-                    ->money('USD', true) // Format mata uang USD
-                    ->sortable(),
-                    Tables\Columns\TextColumn::make('revenue_month')
-                    ->label('Month')
-                    ->sortable(),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            Tables\Columns\TextColumn::make('revenue_amount')
+                ->label('Amount ($)')
+                ->money('USD', true)
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('revenue_month')
+                ->label('Month')
+                ->sortable(),
+        ])
+        ->filters([
+            Tables\Filters\SelectFilter::make('revenue_month')
+                ->label('Filter by Month')
+                ->options([
+                    '01' => 'January',
+                    '02' => 'February',
+                    '03' => 'March',
+                    '04' => 'April',
+                    '05' => 'May',
+                    '06' => 'June',
+                    '07' => 'July',
+                    '08' => 'August',
+                    '09' => 'September',
+                    '10' => 'October',
+                    '11' => 'November',
+                    '12' => 'December',
                 ]),
-            ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
     }
 
     public static function getPages(): array
@@ -86,8 +89,6 @@ class RevenueResource extends Resource
 
     public static function canCreate(): bool
     {
-        return in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR]);
-
+        return auth()->user() && in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR]);
     }
-
 }
