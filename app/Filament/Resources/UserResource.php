@@ -83,6 +83,7 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Action::make('verify')
+                ->color('success')
                 ->label('Verifikasi')
                 ->action(function (User $record) {
                     $record->update(['is_verified' => true]); // Cek apakah ini berhasil
@@ -90,6 +91,7 @@ class UserResource extends Resource
                     Notification::make()
                         ->title('Pengguna telah diverifikasi.')
                         ->success()
+                        
                         ->send();
                 })
                 ->requiresConfirmation()

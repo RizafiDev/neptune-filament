@@ -11,11 +11,21 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Table;
+use App\Filament\Widgets\RevenueWidget;
 
 class RevenueResource extends Resource
 {
     protected static ?string $model = Revenue::class;
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+
+
+     // Method untuk mendapatkan widget
+     public static function getWidgets(): array
+    {
+        return [
+            RevenueWidget::class, // Pastikan ini menggunakan kelas yang tepat
+        ];
+    }
 
     public static function form(Form $form): Form
     {
