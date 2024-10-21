@@ -10,8 +10,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Actions\Action;
 
 class UserResource extends Resource
 {
@@ -68,13 +72,28 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable(),
+                    BooleanColumn::make('is_verified')->label('Verified'),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_verified')
+                ->label('Belum Diverifikasi')
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Action::make('verify')
+                ->label('Verifikasi')
+                ->action(function (User $record) {
+                    $record->update(['is_verified' => true]); // Cek apakah ini berhasil
+                    $record->save(); // Tidak perlu save() jika update() berhasil
+                    Notification::make()
+                        ->title('Pengguna telah diverifikasi.')
+                        ->success()
+                        ->send();
+                })
+                ->requiresConfirmation()
+                ->visible(fn (User $record) => !$record->is_verified),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

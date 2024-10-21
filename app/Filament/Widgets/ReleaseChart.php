@@ -25,7 +25,7 @@ class ReleaseChart extends ChartWidget
         // Update data berdasarkan hasil dari query
         foreach ($releases as $release) {
             $monthIndex = (int)$release->month - 1; // Sesuaikan indeks array agar sesuai dengan bulan (0-11)
-            $data[$monthIndex] += $release->total;   // Tambahkan total rilis ke bulan yang sesuai
+            $data[$monthIndex] += round($release->total);   // Tambahkan total rilis ke bulan yang sesuai
         }
 
         return [
