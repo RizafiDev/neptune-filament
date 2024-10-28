@@ -9,6 +9,7 @@ use Filament\Support\Enums\IconPosition;
 
 class RevenueWidget extends BaseWidget
 {
+    protected static ?int $sort = 2;
     protected function getStats(): array
     {
         // Menghitung total revenue dan memformatnya

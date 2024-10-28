@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Table;
 use App\Filament\Widgets\RevenueWidget;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Actions\Action;
 
 class RevenueResource extends Resource
 {
@@ -44,12 +46,26 @@ class RevenueResource extends Resource
                 ->label('Revenue Month')
                 ->type('month') // Menggunakan input type month
                 ->required(),
+                Forms\Components\FileUpload::make('tf_img_file_path')->label('Pay Document')->preserveFilenames(),
         ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table->columns([
+            Tables\Columns\TextColumn::make('id'),
+            BadgeColumn::make('status')
+            ->getStateUsing(function ($record) {
+                return match ($record->status) {
+                    'waiting' => 'Waiting',
+                    'transferred' => 'Transferred',
+                    default => 'Waiting',
+                };
+            })
+            ->colors([
+                'warning' => 'Waiting',
+                'success' => 'Transferred',
+            ]),
             Tables\Columns\TextColumn::make('artist_name')
                 ->label('Artist Name'),
 
@@ -61,6 +77,12 @@ class RevenueResource extends Resource
             Tables\Columns\TextColumn::make('revenue_month')
                 ->label('Month')
                 ->sortable(),
+                Tables\Columns\TextColumn::make('tf_img_file_path')
+                ->formatStateUsing(fn ($state) => $state 
+                  ? '<img src="' . url('storage/' . $state) . '" alt="Pay Document" style="max-width: 50px; max-height: 50px; object-fit: cover;">'
+                  : 'No image')
+               ->html()
+             ->label('Pay Document'),
         ])
         ->filters([
             Tables\Filters\SelectFilter::make('revenue_month')
@@ -81,7 +103,16 @@ class RevenueResource extends Resource
                 ]),
         ])
         ->actions([
+            Action::make('transferred') // Mengganti "transfered" menjadi "transferred"
+                ->label('Transferred')
+                ->action(function ($record) {
+                    $record->update(['status' => 'transferred']);
+                })
+                ->requiresConfirmation()
+                ->color('success')
+                ->visible(fn ($record) => $record->status !== 'transferred'),
             Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
         ])
         ->bulkActions([
             Tables\Actions\DeleteBulkAction::make(),

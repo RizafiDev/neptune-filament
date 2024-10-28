@@ -10,6 +10,8 @@ use Filament\Support\Enums\IconPosition;
 
 class UserWidget extends BaseWidget
 {
+
+    protected static ?int $sort = 1;
     protected function getStats(): array
     {
         return [

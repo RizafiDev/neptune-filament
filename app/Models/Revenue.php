@@ -15,6 +15,8 @@ class Revenue extends Model
         'artist_name',
         'revenue_amount',
         'revenue_month',
+        'status',
+        'tf_img_file_path'
     ];
 
     public function getAmountAttribute($value)

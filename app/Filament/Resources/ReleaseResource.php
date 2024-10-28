@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReleaseResource\Pages;
-use App\Filament\Resources\ReleaseResource\RelationManagers;
 use App\Models\Release;
 use Filament\Forms;
 use App\Models\User;
@@ -13,8 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\BadgeColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
 
 class ReleaseResource extends Resource
 {
@@ -66,7 +64,7 @@ class ReleaseResource extends Resource
                 Tables\Columns\TextColumn::make('featuring')->label('Artist Featuring'),
                 Tables\Columns\TextColumn::make('image_file_path')
     ->formatStateUsing(fn ($state) => $state 
-        ? '<img src="' . url('storage/' . $state) . '" alt="Artwork" style="max-width: 150px; max-height: 150px; object-fit: cover;">'
+        ? '<img src="' . url('storage/' . $state) . '" alt="Artwork" style="max-width: 50px; max-height: 50px; object-fit: cover;">'
         : 'No image')
     ->html()
     ->label('Artwork'),
@@ -79,15 +77,17 @@ class ReleaseResource extends Resource
                     : 'No file')
                 ->html()
                 ->label('Music'),
-            
-                
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\TextColumn::make('created_at')
                 ->label('Create At'),
 
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+    ->options([
+        'review' => 'Reviewing',
+        'approved' => 'Approved',
+    ])
             ])
             ->actions([
                 Action::make('approve')

@@ -7,8 +7,9 @@ use App\Models\Release;
 
 class ReleaseChart extends ChartWidget
 {
-    protected static ?string $heading = 'Releases Per Month';
-
+    protected static ?string $heading  = 'Releases Per Month';
+    
+    protected static ?int $sort = 4;
     protected function getData(): array
     {
         // Ambil data jumlah rilis per bulan berdasarkan created_at

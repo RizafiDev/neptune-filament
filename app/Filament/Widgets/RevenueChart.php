@@ -8,7 +8,7 @@ use App\Models\Revenue;
 class RevenueChart extends ChartWidget
 {
     protected static ?string $heading = 'Revenue Stats Overview';
-
+    protected static ?int $sort = 3;
     protected function getData(): array
     {
         // Ambil data revenue per bulan dengan format YYYY-MM, lalu ekstrak bulannya
