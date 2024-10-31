@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Filters\SelectFilter;
+use App\Models\Artist;
 
 class ReleaseResource extends Resource
 {
@@ -26,13 +27,16 @@ class ReleaseResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')->label('Release Tittle')->required()->maxLength(255),
                 Forms\Components\TextInput::make('upc')->label('UPC')->maxLength(255)->nullable(),
-                Forms\Components\TextInput::make('artist_name')->label('Artist')->required() ->maxLength(255),
-                Forms\Components\TextInput::make('name')->label('Full Name')->required() ->maxLength(255),
+                 Forms\Components\Select::make('artist_name')
+            ->label('Artist Name')
+            ->options(Artist::pluck('artist_name', 'id')->toArray())
+            ->searchable()
+            ->required(),
                 Forms\Components\TextInput::make('featuring')->label('Artist Featuring') ->maxLength(255),
-                Forms\Components\FileUpload::make('image_file_path')->label('Artwork')->required()->preserveFilenames(),
-                Forms\Components\FileUpload::make('file_path')->label('Music')->required()->preserveFilenames(),
                 Forms\Components\Select::make('type')->label('Type')->options(Release::TYPE)->required(),
                 Forms\Components\Select::make('explicit')->label('Explicit')->options(Release::EXPLICIT)->required(),
+                Forms\Components\FileUpload::make('image_file_path')->label('Artwork')->required()->preserveFilenames(),
+                Forms\Components\FileUpload::make('file_path')->label('Music')->required()->preserveFilenames(),
                 Forms\Components\TextInput::make('email')->required()->maxLength(255)->email(),
             ]);
     }   
@@ -58,9 +62,9 @@ class ReleaseResource extends Resource
                     'danger' => 'Rejected',
                 ]),
                 Tables\Columns\TextColumn::make('upc')->label('UPC'),
+                Tables\Columns\TextColumn::make('artist_name')
+                ->label('Artist Name'),
                 Tables\Columns\TextColumn::make('title')->label('Release Tittle'),
-                Tables\Columns\TextColumn::make('artist_name')->label('Artist'),
-                Tables\Columns\TextColumn::make('name')->label('Full Name'),
                 Tables\Columns\TextColumn::make('featuring')->label('Artist Featuring'),
                 Tables\Columns\TextColumn::make('image_file_path')
     ->formatStateUsing(fn ($state) => $state 

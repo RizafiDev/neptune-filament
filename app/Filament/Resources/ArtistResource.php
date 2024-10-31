@@ -25,8 +25,10 @@ class ArtistResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\TextInput::make('artist_name')->required()->label("Artist Name"),
+                Forms\Components\TextInput::make('legal_name')->required()->label("Legal Name"),
+                Forms\Components\FileUpload::make('artist_avatar')->label("Avatar (1:1)")->preserveFilenames(),
+                Forms\Components\FileUpload::make('artist_idcard')->required()->preserveFilenames()->label("ID Card"),
             ]);
     }
 
@@ -34,13 +36,30 @@ class ArtistResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id')->label("ID"),
+                Tables\Columns\TextColumn::make('created_at')->label("Since"),
+                Tables\Columns\TextColumn::make('artist_avatar')
+    ->formatStateUsing(fn ($state) => $state 
+        ? '<img src="' . url('storage/' . $state) . '" alt="Avatar" style="max-width: 50px; max-height: 50px; object-fit: cover;">'
+        : 'No image')
+    ->html()
+    ->label('Artist Avatar'),
+                Tables\Columns\TextColumn::make('artist_name')->label('Artist Name'),
+                Tables\Columns\TextColumn::make('total_releases')->label("Total Release"),
+                Tables\Columns\TextColumn::make('total_royalties'),
+                Tables\Columns\TextColumn::make('artist_idcard')
+                ->formatStateUsing(fn ($state) => $state 
+                    ? '<img src="' . url('storage/' . $state) . '" alt="ID Card" style="max-width: 50px; max-height: 50px; object-fit: cover;">'
+                    : 'No image')
+                ->html()
+                ->label('ID Card'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

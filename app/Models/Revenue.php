@@ -18,6 +18,7 @@ class Revenue extends Model
         'status',
         'tf_img_file_path'
     ];
+    
 
     public function getAmountAttribute($value)
     {

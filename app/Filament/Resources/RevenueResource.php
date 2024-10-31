@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use App\Filament\Widgets\RevenueWidget;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Actions\Action;
+use App\Models\Artist;
 
 class RevenueResource extends Resource
 {
@@ -32,10 +33,11 @@ class RevenueResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make('artist_name')
+             Forms\Components\Select::make('artist_name')
                 ->label('Artist')
-                ->required()
-                ->maxLength(255),
+                ->options(Artist::pluck('artist_name', 'id')->toArray())
+                ->searchable()
+                ->required(),
 
             TextInput::make('revenue_amount')
                 ->label('Amount ($)')

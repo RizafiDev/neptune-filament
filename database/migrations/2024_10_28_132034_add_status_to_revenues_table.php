@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('revenues', function (Blueprint $table) {
             $table->string('status')->default('waiting');
-            $table->string('tf_img_file_path');
+            $table->string('tf_img_file_path')->nullable();
         });
     }
 

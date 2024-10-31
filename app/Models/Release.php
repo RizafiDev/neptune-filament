@@ -35,7 +35,6 @@ class Release extends Model
         'image_file_path',
         'type',
         'explicit',
-        'name',          // Nama artis atau judul release
         'email',         // Alamat email
         'artist_name',   // Nama artis
         'file_path',         // Path file musik

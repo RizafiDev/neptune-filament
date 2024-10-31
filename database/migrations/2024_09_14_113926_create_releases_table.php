@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('releases', function (Blueprint $table) {
             $table->id();
             $table->string('upc')->nullable();
-            $table->string('name');
             $table->string('email');
             $table->string('artist_name');
             $table->string('file_path');
