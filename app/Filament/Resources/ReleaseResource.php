@@ -29,7 +29,7 @@ class ReleaseResource extends Resource
                 Forms\Components\TextInput::make('upc')->label('UPC')->maxLength(255)->nullable(),
                  Forms\Components\Select::make('artist_name')
             ->label('Artist Name')
-            ->options(Artist::pluck('artist_name', 'id')->toArray())
+            ->options(Artist::pluck('artist_name', 'artist_name')->toArray())
             ->searchable()
             ->required(),
                 Forms\Components\TextInput::make('featuring')->label('Artist Featuring') ->maxLength(255),

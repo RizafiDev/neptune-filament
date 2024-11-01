@@ -35,7 +35,7 @@ class RevenueResource extends Resource
         return $form->schema([
              Forms\Components\Select::make('artist_name')
                 ->label('Artist')
-                ->options(Artist::pluck('artist_name', 'id')->toArray())
+                ->options(Artist::pluck('artist_name', 'artist_name')->toArray())
                 ->searchable()
                 ->required(),
 
