@@ -21,7 +21,19 @@ class RevenueWidget extends BaseWidget
                 ->description('Total Revenue This Month')
                 ->descriptionIcon('heroicon-m-currency-dollar', IconPosition::Before)
                 ->chart([1, 2, 6, 3, 11, 4, 20]) // Anda bisa menyesuaikan chart sesuai kebutuhan
+                ->color('info'),
+
+                Stat::make('Revenue Paid', $formattedRevenue)
+                ->description('Succes Paid')
+                ->descriptionIcon('heroicon-m-currency-dollar', IconPosition::Before)
+                ->chart([1, 2, 6, 3, 11, 4, 20]) // Anda bisa menyesuaikan chart sesuai kebutuhan
                 ->color('success'),
+
+                Stat::make('Pending Pay', $formattedRevenue)
+                ->description('Waiting to pay')
+                ->descriptionIcon('heroicon-m-currency-dollar', IconPosition::Before)
+                ->chart([1, 2, 6, 3, 11, 4, 20]) // Anda bisa menyesuaikan chart sesuai kebutuhan
+                ->color('warning'),
         ];
     }
 }
