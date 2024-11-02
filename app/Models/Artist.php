@@ -16,5 +16,7 @@ class Artist extends Model
         'artist_idcard',
         'total_royalties',
         'total_releases',
+        'email',
     ];
+
 }
