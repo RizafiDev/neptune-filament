@@ -14,6 +14,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Filters\SelectFilter;
 use App\Models\Artist;
+use Filament\Tables\Actions\BulkAction;
 
 class ReleaseResource extends Resource
 {
@@ -76,11 +77,18 @@ class ReleaseResource extends Resource
                 Tables\Columns\TextColumn::make('type')->label('Type'),
                 Tables\Columns\TextColumn::make('explicit')->label('Explicit'),
                 Tables\Columns\TextColumn::make('file_path')
-                ->formatStateUsing(fn ($state) => $state 
-                    ? '<audio controls><source src="' . url('storage/' . $state) . '" type="audio/mpeg">Your browser does not support the audio element.</audio>'
-                    : 'No file')
-                ->html()
-                ->label('Music'),
+    ->formatStateUsing(fn ($state) => $state
+        ? '<a href="' . url('storage/' . $state) . '" download class="flex items-center justify-center gap-3 text-sm font-medium  font-inter">
+              <audio controls>
+                  <source src="' . url('storage/' . $state) . '" type="audio/mpeg">
+                  Your browser does not support the audio element.
+              </audio>
+              Download
+           </a>'
+        : 'No file')
+    ->html()
+    ->label('Music'),
+
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\TextColumn::make('created_at')
                 ->label('Create At'),
@@ -111,14 +119,83 @@ class ReleaseResource extends Resource
                 ->visible(fn () => in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR])),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Action::make('export')
+                ->label('Export Metadata')
+                ->icon('heroicon-m-document-arrow-down')
+                ->color('info')
+                ->action(function () {
+                    // All data to export
+                    $releases = Release::all();
+                    $fileName = 'releases_metadata.csv';
+
+                    $headers = [
+                        'Content-type'        => 'text/csv',
+                        'Content-Disposition' => "attachment; filename=$fileName",
+                        'Pragma'              => 'no-cache',
+                        'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+                        'Expires'             => '0',
+                    ];
+
+                    $columns = $releases->first() ? array_keys($releases->first()->toArray()) : [];
+
+                    $callback = function() use ($releases, $columns) {
+                        $file = fopen('php://output', 'w');
+                        fputcsv($file, $columns);
+
+                        foreach ($releases as $release) {
+                            fputcsv($file, $release->toArray());
+                        }
+                        fclose($file);
+                    };
+
+                    return response()->stream($callback, 200, $headers);
+                })
+                ->requiresConfirmation(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                     ->visible(fn () => in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR])),
-                ])
+                    BulkAction::make('export')
+                ->label('Export Metadata')
+                ->icon('heroicon-m-document-arrow-down')
+                ->color('info')
+                ->action(function () {
+                    // All data to export
+                    $releases = Release::all();
+                    $fileName = 'releases_metadata.csv';
+
+                    $headers = [
+                        'Content-type'        => 'text/csv',
+                        'Content-Disposition' => "attachment; filename=$fileName",
+                        'Pragma'              => 'no-cache',
+                        'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+                        'Expires'             => '0',
+                    ];
+
+                    $columns = $releases->first() ? array_keys($releases->first()->toArray()) : [];
+
+                    $callback = function() use ($releases, $columns) {
+                        $file = fopen('php://output', 'w');
+                        fputcsv($file, $columns);
+
+                        foreach ($releases as $release) {
+                            fputcsv($file, $release->toArray());
+                        }
+                        fclose($file);
+                    };
+
+                    return response()->stream($callback, 200, $headers);
+                })
+                ->requiresConfirmation(),
+                ]
+                
+                )->visible(fn () => in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR])),
+                
             ]);
     }
+
 
     public static function getRelations(): array
     {

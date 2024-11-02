@@ -112,13 +112,17 @@ class RevenueResource extends Resource
                 })
                 ->requiresConfirmation()
                 ->color('success')
-                ->visible(fn ($record) => $record->status !== 'transferred'),
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
+                ->visible(fn ($record) => $record->status !== 'transferred')
+                ->visible(fn () => in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR])),
+            Tables\Actions\EditAction::make()
+            ->visible(fn () => in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR])),
+            Tables\Actions\DeleteAction::make()
+            ->visible(fn () => in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR])),
         ])
         ->bulkActions([
-            Tables\Actions\DeleteBulkAction::make(),
-        ]);
+            Tables\Actions\DeleteBulkAction::make()->visible(fn () => in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR])),
+        ]
+    );
     }
 
     public static function getPages(): array
@@ -134,4 +138,5 @@ class RevenueResource extends Resource
     {
         return auth()->user() && in_array(auth()->user()->role, [User::ROLE_ADMIN, User::ROLE_EDITOR]);
     }
+
 }

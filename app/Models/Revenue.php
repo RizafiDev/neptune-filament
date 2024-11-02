@@ -29,4 +29,16 @@ class Revenue extends Model
     {
         $this->attributes['revenue_amount'] = round($value, 2); // Menyimpan nilai dengan 2 desimal
     }
+
+    public static function getPaidRevenueTotal(): string
+{
+    $total = static::where('status', 'transferred')->sum('revenue_amount');
+    return '$' . number_format($total, 2); // Memformat sebagai mata uang dengan 2 angka desimal
+}
+
+public static function getPendingRevenueTotal(): string
+{
+    $total = static::where('status', 'waiting')->sum('revenue_amount');
+    return '$' . number_format($total, 2); // Memformat sebagai mata uang dengan 2 angka desimal
+}
 }
